@@ -6,6 +6,17 @@ build-backend = "setuptools.build_meta"
 include = ["gridfm_graphkit*"]
 namespaces = false
 
+[tool.uv.sources]
+torch-scatter = { url = "https://data.pyg.org/whl/torch-2.10.0%2Bcu128/torch_scatter-2.1.2%2Bpt210cu128-cp312-cp312-linux_x86_64.whl" }
+torch = [{ index = "pytorch-cu128" }]
+torchvision = [{ index = "pytorch-cu128" }]
+torchaudio = [{ index = "pytorch-cu128" }]
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
+
 [project]
 name = "gridfm-graphkit"
 description = "Grid Foundation Model"
@@ -48,15 +59,16 @@ dependencies = [
     "pandas>=2.3.0",
     "plotly>=6.1.2",
     "pyyaml>=6.0.2",
-    "torch>=2.10",
+    "torch==2.10.0",
     "torch-geometric>=2.6.1",
-    "torchaudio>=2.10",
-    "torchvision>=0.25",
+    "torchaudio==2.11.0",
+    "torchvision==0.25.0",
     "lightning",
     "seaborn",
     "urllib3>=2.6.0",
     "gdown>=6.0.0",
     "gridfm-datakit==1.0.5",
+    "torch-scatter",
 ]
 
 [project.optional-dependencies]
