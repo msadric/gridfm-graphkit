@@ -1,0 +1,92 @@
+callbacks:
+  patience: 100
+  tol: 0
+  early_stopping_monitor: Validation loss
+  checkpoint_monitor: Validation loss
+  lr_scheduler_monitor: Validation loss
+task:
+  task_name: PowerFlow
+data:
+  baseMVA: 100
+  mask_type: rnd
+  mask_ratio: 0.5
+  mask_value: 0
+  normalization: HeteroDataMVANormalizer
+  networks:
+  - case14_ieee
+  scenarios:
+  - 3000 # matches gridfm-datakit's pf_small_case14 output
+  test_ratio: 0.1
+  val_ratio: 0.1
+  workers: 4
+  posenc_RRWP:
+    enable: false
+    ksteps: 21
+    cache: true
+    topk: 5
+  posenc_RWSE:
+    enable: true
+    cache: true
+    kernel:
+      times: 21
+model:
+  attention_head: 8
+  dropout: 0.1
+  edge_dim: 10
+  hidden_size: 496
+  input_dim: 16
+  input_bus_dim: 16
+  input_gen_dim: 6
+  output_bus_dim: 6
+  output_gen_dim: 0
+  num_layers: 7
+  type: GRIT
+  act: relu
+  encoder:
+    node_encoder: true
+    edge_encoder: true
+    node_encoder_name: RWSE
+    node_encoder_bn: true
+    edge_encoder_bn: true
+    posenc_RWSE:
+      pe_dim: 20
+      raw_norm_type: batchnorm
+  gt:
+    layer_type: GritTransformer
+    layer_norm: false
+    batch_norm: true
+    update_e: true
+    attn_dropout: 0.2
+    attn:
+      clamp: 5.
+      act: relu
+      full_attn: false
+      edge_enhance: true
+      O_e: true
+      norm_e: true
+      signed_sqrt: true
+      bn_momentum: 0.1
+      bn_no_runner: false
+optimizer:
+  beta1: 0.9
+  beta2: 0.999
+  learning_rate: 0.0001
+  lr_decay: 0.7
+  lr_patience: 10
+seed: 0
+training:
+  batch_size: 8
+  epochs: 15 # reduced from 500 for a comparison run, not full convergence
+  loss_weights:
+  - 0.99
+  - 0.01
+  losses:
+  - PBE
+  - MaskedReconstructionMSE
+  loss_args:
+  - {}
+  - {}
+  accelerator: auto
+  devices: auto
+  strategy: auto
+verbose: true
